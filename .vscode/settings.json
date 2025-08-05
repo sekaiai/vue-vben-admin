@@ -13,10 +13,10 @@
   // editor
   "editor.tabSize": 2,
   "editor.detectIndentation": false,
-  "editor.cursorBlinking": "expand",
+  // "editor.cursorBlinking": "expand",
   "editor.largeFileOptimizations": true,
   "editor.accessibilitySupport": "off",
-  "editor.cursorSmoothCaretAnimation": "on",
+  // "editor.cursorSmoothCaretAnimation": "on",
   "editor.guides.bracketPairs": "active",
   "editor.inlineSuggest.enabled": true,
   "editor.suggestSelection": "recentlyUsedByPrefix",
@@ -68,11 +68,11 @@
   "extensions.ignoreRecommendations": true,
 
   // terminal
-  "terminal.integrated.cursorBlinking": true,
-  "terminal.integrated.persistentSessionReviveProcess": "never",
-  "terminal.integrated.tabs.enabled": true,
-  "terminal.integrated.scrollback": 10000,
-  "terminal.integrated.stickyScroll.enabled": true,
+  // "terminal.integrated.cursorBlinking": true,
+  // "terminal.integrated.persistentSessionReviveProcess": "never",
+  // "terminal.integrated.tabs.enabled": true,
+  // "terminal.integrated.scrollback": 10000,
+  // "terminal.integrated.stickyScroll.enabled": true,
 
   // files
   "files.eol": "\n",
