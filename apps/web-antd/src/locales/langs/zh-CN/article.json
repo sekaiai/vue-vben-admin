@@ -1,0 +1,14 @@
+{
+  "description": "文章列表",
+  "edit": "编辑文章",
+  "publish": "新建文章",
+  "title": "文章",
+  "vben": {
+    "about": "关于",
+    "antdv": "Ant Design Vue 版本",
+    "document": "文档",
+    "element-plus": "Element Plus 版本",
+    "naive-ui": "Naive UI 版本",
+    "title": "项目"
+  }
+}
