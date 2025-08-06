@@ -49,3 +49,10 @@ vite.config.ts.*
 *.sln
 *.sw?
 .history
+
+
+# 过滤无用apps
+apps/backend-mock
+apps/web-ele
+apps/web-naive
+docs
