@@ -33,7 +33,7 @@ const gridOptions: VxeGridProps<RowType> = {
     { field: 'releaseDate', formatter: 'formatDateTime', title: 'DateTime' },
   ],
   exportConfig: {},
-  height: 'auto',
+  height: '670px',
   keepSource: true,
   proxyConfig: {
     ajax: {
@@ -185,7 +185,7 @@ function notify(type: NotificationType) {
     <Card class="mb-5" title="文章列表">
       <QueryForm />
 
-      <Grid table-title="数据列表" table-title-help="提示">
+      <Grid grid-class="p-8" table-title="数据列表" table-title-help="提示">
         <template #toolbar-tools>
           <Button class="mr-2" type="primary" @click="() => gridApi.query()">
             刷新当前页面
