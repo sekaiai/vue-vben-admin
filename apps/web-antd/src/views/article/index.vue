@@ -3,34 +3,48 @@ import type { VxeGridProps } from '#/adapter/vxe-table';
 
 import { Page } from '@vben/common-ui';
 
-import { Button, Card, message, notification, Space } from 'ant-design-vue';
+import { Button, Card, message, notification } from 'ant-design-vue';
 
 import { useVbenForm } from '#/adapter/form';
 import { useVbenVxeGrid } from '#/adapter/vxe-table';
 import { getExampleTableApi } from '#/api';
 
 interface RowType {
+  id: number;
+  title: string;
+  tags: string[];
   category: string;
-  color: string;
-  id: string;
   price: string;
-  productName: string;
-  releaseDate: string;
+  yushoou: boolean;
+  status: string;
 }
 
 const gridOptions: VxeGridProps<RowType> = {
+  stripe: true,
   checkboxConfig: {
     highlight: true,
     labelField: 'name',
   },
   columns: [
-    { title: '序号', type: 'seq', width: 50 },
-    { align: 'left', title: 'Name', type: 'checkbox', width: 100 },
-    { field: 'category', sortable: true, title: 'Category' },
-    { field: 'color', sortable: true, title: 'Color' },
-    { field: 'productName', sortable: true, title: 'Product Name' },
-    { field: 'price', sortable: true, title: 'Price' },
-    { field: 'releaseDate', formatter: 'formatDateTime', title: 'DateTime' },
+    { field: 'id', title: '序号', align: 'left', width: 50 },
+    { field: 'title', align: 'left', title: ' 标题', width: 140 },
+    { field: 'category', align: 'left', title: '套餐' },
+    { field: 'yushou', align: 'left', sortable: true, title: '预售' },
+    { field: 'price', align: 'left', sortable: true, title: '价格' },
+    { field: 'tags', align: 'left', title: '标签' },
+    { field: 'status', align: 'left', title: '状态' },
+    {
+      field: 'create_at',
+      align: 'left',
+      formatter: 'formatDateTime',
+      title: '创建时间',
+    },
+    {
+      field: 'action',
+      align: 'left',
+      slots: { default: 'action' },
+      title: '操作',
+    },
   ],
   exportConfig: {},
   height: '670px',
@@ -49,13 +63,13 @@ const gridOptions: VxeGridProps<RowType> = {
     sort: true,
   },
   sortConfig: {
-    defaultSort: { field: 'category', order: 'desc' },
+    defaultSort: { field: 'yushou', order: 'desc' },
     remote: true,
   },
   toolbarConfig: {
     custom: true,
     export: true,
-    // import: true,
+    import: true,
     refresh: true,
     zoom: true,
   },
@@ -86,28 +100,33 @@ const [QueryForm] = useVbenForm({
       component: 'Input',
       // 对应组件的参数
       componentProps: {
-        placeholder: '请输入用户名',
+        placeholder: '搜索标题（模糊查询）',
       },
       // 字段名
-      fieldName: 'username',
+      fieldName: 'title',
       // 界面显示的label
-      label: '字符串',
+      label: '标题',
     },
     {
-      component: 'InputPassword',
+      component: 'Select',
       componentProps: {
-        placeholder: '请输入密码',
+        allowClear: true,
+        filterOption: true,
+        options: [
+          {
+            label: '选项1',
+            value: '1',
+          },
+          {
+            label: '选项2',
+            value: '2',
+          },
+        ],
+        placeholder: '请选择',
+        showSearch: true,
       },
-      fieldName: 'password',
-      label: '密码',
-    },
-    {
-      component: 'InputNumber',
-      componentProps: {
-        placeholder: '请输入',
-      },
-      fieldName: 'number',
-      label: '数字(带后缀)',
+      fieldName: 'status',
+      label: '状态',
     },
     {
       component: 'Select',
@@ -128,11 +147,11 @@ const [QueryForm] = useVbenForm({
         showSearch: true,
       },
       fieldName: 'options',
-      label: '下拉选',
+      label: '套餐',
     },
     {
-      component: 'DatePicker',
-      fieldName: 'datePicker',
+      component: 'RangePicker',
+      fieldName: 'rangePicker',
       label: '日期选择框',
     },
   ],
@@ -142,8 +161,10 @@ const [QueryForm] = useVbenForm({
     content: '查询',
   },
   // 大屏一行显示3个，中屏一行显示2个，小屏一行显示1个
-  wrapperClass: 'grid-cols-1 md:grid-cols-3 lg:grid-cols-6',
+  wrapperClass: 'grid-cols-[repeat(auto-fill,minmax(240px,1fr))]',
 });
+
+// grid-template-columns: repeat(auto-fill,minmax(200px,1fr))
 
 function onSubmit(values: Record<string, any>) {
   message.success({
@@ -185,40 +206,14 @@ function notify(type: NotificationType) {
     <Card class="mb-5" title="文章列表">
       <QueryForm />
 
-      <Grid grid-class="p-8" table-title="数据列表" table-title-help="提示">
-        <template #toolbar-tools>
-          <Button class="mr-2" type="primary" @click="() => gridApi.query()">
-            刷新当前页面
-          </Button>
-          <Button type="primary" @click="() => gridApi.reload()">
-            刷新并返回第一页
-          </Button>
+      <Grid grid-class="p-0" table-title="数据列表">
+        <template #action>
+          <div class="flex gap-2">
+            <Button type="primary" ghost size="small">编辑</Button>
+            <Button type="primary" danger ghost size="small">删除</Button>
+          </div>
         </template>
       </Grid>
-
-      <Space>
-        <Button>Default</Button>
-        <Button type="primary"> Primary </Button>
-        <Button> Info </Button>
-        <Button danger> Error </Button>
-      </Space>
-    </Card>
-    <Card class="mb-5" title="Message">
-      <Space>
-        <Button @click="info"> 信息 </Button>
-        <Button danger @click="error"> 错误 </Button>
-        <Button @click="warning"> 警告 </Button>
-        <Button @click="success"> 成功 </Button>
-      </Space>
-    </Card>
-
-    <Card class="mb-5" title="Notification">
-      <Space>
-        <Button @click="notify('info')"> 信息 </Button>
-        <Button danger @click="notify('error')"> 错误 </Button>
-        <Button @click="notify('warning')"> 警告 </Button>
-        <Button @click="notify('success')"> 成功 </Button>
-      </Space>
     </Card>
   </Page>
 </template>

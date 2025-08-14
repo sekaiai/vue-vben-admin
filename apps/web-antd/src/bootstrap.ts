@@ -8,13 +8,19 @@ import '@vben/styles';
 import '@vben/styles/antd';
 
 import { useTitle } from '@vueuse/core';
+// VueMarkdownEditor.use(vuepressTheme, {});
+import mavonEditor from 'mavon-editor';
 
 import { $t, setupI18n } from '#/locales';
 
 import { initComponentAdapter } from './adapter/component';
 import { initSetupVbenForm } from './adapter/form';
 import App from './app.vue';
+// import '@kangc/v-md-editor/lib/style/base-editor.css';
+// import '@kangc/v-md-editor/lib/theme/style/vuepress.css';
 import { router } from './router';
+
+import 'mavon-editor/dist/css/index.css';
 
 async function bootstrap(namespace: string) {
   // 初始化组件适配器
@@ -60,6 +66,9 @@ async function bootstrap(namespace: string) {
   const { MotionPlugin } = await import('@vben/plugins/motion');
   app.use(MotionPlugin);
 
+  // 编辑器
+  // app.use(VueMarkdownEditor);
+  app.use(mavonEditor);
   // 动态更新标题
   watchEffect(() => {
     if (preferences.app.dynamicTitle) {
