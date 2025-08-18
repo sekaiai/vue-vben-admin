@@ -18,6 +18,7 @@ import {
   Select,
   SelectOption,
   Switch,
+  Table,
   Textarea,
 } from 'ant-design-vue';
 
@@ -59,7 +60,7 @@ const formState: UnwrapRef<Article> = reactive({
   deadline: '', // 截止时间（可选）
   publishDate: '', // 发布时间（可选）
   status: 'pending', // 状态  | 'published' | 'archived';
-  updates: [{ updateTime: '', content: '' }], // 作者更新记录
+  updates: [{ updateTime: ' 2024-12-23 13:23', content: '你好世界' }], // 作者更新记录
 });
 
 const rules: Record<string, Rule[]> = {
@@ -132,6 +133,23 @@ const packageOptions = ref<any[]>([
   { value: '3', label: '套餐3' },
   { value: '4', label: '套餐4' },
 ]);
+
+const updateColumns = [
+  {
+    title: '更新时间',
+    dataIndex: 'updateTime',
+    width: 160,
+  },
+  {
+    title: '内容',
+    dataIndex: 'content',
+  },
+  {
+    title: '操作',
+    dataIndex: 'action',
+    width: 100,
+  },
+];
 </script>
 
 <template>
@@ -144,6 +162,27 @@ const packageOptions = ref<any[]>([
         layout="vertical"
         class="max-w-screen-md"
       >
+        <FormItem label="作者更新记录" name="updates">
+          <Table
+            size="small"
+            :columns="updateColumns"
+            :pagination="false"
+            :data-source="formState.updates"
+            bordered
+          >
+            <template #bodyCell="{ column, text }">
+              <template v-if="column.dataIndex === 'content'">
+                <a>{{ text }}</a>
+              </template>
+              <template v-else-if="column.dataIndex === 'action'">
+                <a type="link" size="small">修改</a>
+              </template>
+            </template>
+          </Table>
+
+          <!-- <Button class="mb-2" @click="openUpdateModal">添加更新记录</Button> -->
+        </FormItem>
+
         <FormItem label="标题" name="title" class="w-96">
           <Input v-model:value="formState.title" />
         </FormItem>
@@ -151,68 +190,6 @@ const packageOptions = ref<any[]>([
           <Textarea v-model:value="formState.description" />
         </FormItem>
 
-        <FormItem label="套餐（可选）" name="package">
-          <Select
-            :get-popup-container="(trigger) => trigger.parentNode"
-            v-model:value="formState.package"
-            mode="multiple"
-            placeholder="Inserted are removed"
-            style="width: 100%"
-            :options="packageOptions"
-          />
-        </FormItem>
-
-        <FormItem label="复盘内容" name="review">
-          <Textarea v-model:value="formState.review" />
-        </FormItem>
-
-        <FormItem label="文章内容" name="content">
-          <!-- <Textarea v-model:value="formState.content" /> -->
-
-          <!-- <v-md-editor v-model="formState.content" height="500px" /> -->
-          <mavon-editor
-            editor-background="transparent"
-            v-model="formState.content"
-          />
-        </FormItem>
-
-        <FormItem label="标题" name="title" class="w-96">
-          <Input v-model:value="formState.title" />
-        </FormItem>
-        <FormItem label="价格" name="price">
-          <Input v-model:value="formState.price" type="number" />
-        </FormItem>
-        <FormItem label="不红退" name="refundGuarantee">
-          <Switch v-model:checked="formState.refundGuarantee" />
-        </FormItem>
-        <FormItem label="预售" name="presale">
-          <Switch v-model:checked="formState.presale" />
-        </FormItem>
-        <FormItem label="截止时间" name="deadline">
-          <DatePicker
-            v-model:value="formState.deadline"
-            show-time
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-          />
-        </FormItem>
-        <FormItem label="发布时间" name="publishDate">
-          <DatePicker
-            v-model:value="formState.publishDate"
-            show-time
-            type="date"
-            placeholder="Pick a date"
-            style="width: 100%"
-          />
-        </FormItem>
-        <FormItem label="状态" name="status">
-          <Select v-model:value="formState.status" style="width: 100%">
-            <SelectOption value="pending">待发布</SelectOption>
-            <SelectOption value="published">已发布</SelectOption>
-            <SelectOption value="archived">已归档</SelectOption>
-          </Select>
-        </FormItem>
         <FormItem label="标签" name="tags">
           <Select
             v-model:value="formState.tags"
@@ -221,14 +198,77 @@ const packageOptions = ref<any[]>([
             style="width: 100%"
           />
         </FormItem>
-        <FormItem label="作者更新记录" name="updates">
-          <div v-for="(update, index) in formState.updates" :key="index">
-            <div># {{ index + 1 }}</div>
-            <Textarea
-              v-model:value="update.content"
-              placeholder="请输入作者更新记录"
+
+        <div class="grid grid-cols-3 gap-x-6">
+          <FormItem label="不红退" name="refundGuarantee">
+            <Switch v-model:checked="formState.refundGuarantee" />
+          </FormItem>
+
+          <FormItem label="价格" name="price">
+            <Input v-model:value="formState.price" type="number" />
+          </FormItem>
+
+          <FormItem label="套餐（可选）" name="package">
+            <Select
+              :get-popup-container="(trigger) => trigger.parentNode"
+              v-model:value="formState.package"
+              mode="multiple"
+              placeholder="Inserted are removed"
+              style="width: 100%"
+              :options="packageOptions"
             />
-          </div>
+          </FormItem>
+
+          <FormItem label="状态" name="status">
+            <Select v-model:value="formState.status" style="width: 100%">
+              <SelectOption value="pending">待发布</SelectOption>
+              <SelectOption value="published">已发布</SelectOption>
+              <SelectOption value="archived">已归档</SelectOption>
+            </Select>
+          </FormItem>
+
+          <!-- <FormItem label="预售" name="presale">
+            <Switch v-model:checked="formState.presale" />
+          </FormItem> -->
+
+          <FormItem label="截止时间" name="deadline">
+            <DatePicker
+              v-model:value="formState.deadline"
+              show-time
+              type="date"
+              placeholder="结束售卖时间"
+              style="width: 100%"
+            />
+          </FormItem>
+          <FormItem label="发布时间" name="publishDate">
+            <DatePicker
+              v-model:value="formState.publishDate"
+              show-time
+              type="date"
+              placeholder="不填立即发布"
+              style="width: 100%"
+            />
+          </FormItem>
+        </div>
+
+        <FormItem label="文章内容" name="content">
+          <!-- <Textarea v-model:value="formState.content" /> -->
+
+          <!-- <v-md-editor v-model="formState.content" height="500px" /> -->
+          <mavon-editor
+            class="mavon-editor"
+            editor-background="transparent"
+            v-model="formState.content"
+          />
+        </FormItem>
+
+        <FormItem label="复盘内容" name="review">
+          <!-- <Textarea v-model:value="formState.review" /> -->
+          <mavon-editor
+            class="mavon-editor"
+            editor-background="transparent"
+            v-model="formState.review"
+          />
         </FormItem>
 
         <FormItem>
@@ -239,3 +279,9 @@ const packageOptions = ref<any[]>([
     </Card>
   </Page>
 </template>
+
+<style lang="scss">
+.mavon-editor textarea {
+  background-color: transparent;
+}
+</style>
