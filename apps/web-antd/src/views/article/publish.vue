@@ -23,7 +23,7 @@ import {
 
 // 作者更新子文档接口
 export interface AuthorUpdate {
-  updateTime: Date;
+  updateTime: string;
   content: string;
 }
 
@@ -51,7 +51,7 @@ const formState: UnwrapRef<Article> = reactive({
   description: '', // 简介
   review: '', // 复盘（可选）
   content: `你好哦，世界`, // 付费内容（可选）
-  price: null, // 价格
+  price: 0, // 价格
   package: [], // 套餐（可选）
   tags: [], // 标签
   refundGuarantee: false, // 不红退（不赢退钱）
@@ -111,14 +111,14 @@ const onSubmit = () => {
     ?.validate()
     .then(() => {
       const values = toRaw(formState);
-      console.log('values', formState, values);
+      // console.log('values', formState, values);
 
       message.success({
         content: `form values: ${JSON.stringify(values)}`,
       });
     })
-    .catch((error) => {
-      console.log('error', error);
+    .catch((error: any) => {
+      console.error('error', error);
     });
 };
 
@@ -153,6 +153,7 @@ const packageOptions = ref<any[]>([
 
         <FormItem label="套餐（可选）" name="package">
           <Select
+            :get-popup-container="(trigger) => trigger.parentNode"
             v-model:value="formState.package"
             mode="multiple"
             placeholder="Inserted are removed"
